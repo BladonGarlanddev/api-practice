@@ -12,6 +12,13 @@ interface Post {
     body: string
 }
 
+interface PostPatch {
+    userId?: number,
+    id?: number,
+    title?: string,
+    body?: string
+}
+
 const axiosInstance = axios.create({
   baseURL: "https://jsonplaceholder.typicode.com/",
   timeout: 1000,
@@ -34,7 +41,7 @@ const getAllTitles = async ():Promise<string[]> => {
     return output
 }
 
-const getUserPosts = async (userId:number):Promise<Post[]> => {
+const getResources = async (userId:number):Promise<Post[]> => {
     const result:Post[] = await listAllResources()
     let output:Post[] = []
     
@@ -57,16 +64,18 @@ const updateResource = async(data:Post, postId:number):Promise<{status: number, 
     return {status: result.status, data: result.data}
 }
 
+const patchResource = async(data: PostPatch, postId: number ): Promise<{status: number, data: PostPatch}> => {
+    let result = await axiosInstance.put(`posts/${postId}`, data)
+    return { status: result.status, data: result.data };
+}
+
+const deleteResource = async(postId):Promise<{status: number, data: Post}> => {
+    let result:AxiosResponse<Post> = await axiosInstance.delete(`posts/${postId}`)
+    return {status: result.status, data: result.data}
+}
 
 async function main() {
-    let data:Post = {
-        userId: 101,
-        id: 101,
-        title: "hairy balls",
-        body: "Big hairy balls"
-    }
-    let result = await updateResource(data, 1)
-    console.log(result)
+
 }
 
 main()
